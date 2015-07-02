@@ -1,0 +1,59 @@
+name: BExtra
+version: 1.0
+description: Miscellaneous player and administrative commands.
+author: RedstoneFiend
+website: https://github.com/RedstoneFiend/BExtra
+
+main: io.github.redstonefiend.bextra.Main
+database: false
+
+commands:
+    bextra:
+        description: Boomerang Extra administrative commands.
+        usage: /<command> [ver[sion] | mute [minutes] | protectboats [true | false]]
+        permission: bextra.bextra
+        permission-message: You don't have <permission>
+    fly:
+        description: Toggle flight. Double-tap space bar to fly when enabled.
+        usage: /<command>
+        permission: bextra.fly
+        permission-message: You don't have <permission>
+    mute:
+        description: Mute a player or list muted players.
+        usage: /<command> [player]
+        permission: bextra.mute
+        permission-message: You don't have <permission>
+    unmute:
+        description: Unmute a player or list muted players.
+        usage: /<command> [player]
+        permission: bextra.mute
+        permission-message: You don't have <permission>
+    nightvision:
+        aliases: nv
+        description: Toggle night vision.
+        usage: /<command>
+        permission: bextra.nightvision
+        permission-message: You don't have <permission>
+
+permissions:
+    bextra.*:
+        description: Gives access to all Boomerang Extra commands
+        children:
+            bextra.bextra: true
+            bextra.fly: true
+            bextra.fly.other: true
+            bextra.mute: true
+            bextra.nightvision: true
+            bextra.nightvision.other: true
+    bextra.bextra:
+        description: Allows access to Boomerang Extra administrative commands.
+        default: op
+    bextra.fly:
+        description: Allows you to toggle flight.
+        default: op
+    bextra.mute:
+        description: Allows you to mute or unmute a player.
+        default: op
+    bextra.nightvision:
+        description: Allows you to toggle night vision.
+        default: op
