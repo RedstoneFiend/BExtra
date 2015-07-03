@@ -1,3 +1,6 @@
-# Boomerang Extra
+# *******************
+# * Boomerang Extra *
+# *******************
+version: 1
 mute_minutes: 5
 protect_boats: true

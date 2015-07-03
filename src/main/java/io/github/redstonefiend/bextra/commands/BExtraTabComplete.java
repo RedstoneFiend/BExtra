@@ -21,33 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.redstonefiend.bextra.listeners;
+package io.github.redstonefiend.bextra.commands;
 
 import io.github.redstonefiend.bextra.Main;
-import org.bukkit.entity.Boat;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
-/**
- *
- * @author chrisbot
- */
-public class ListenerVehicleDestroy implements Listener {
+public class BExtraTabComplete implements TabCompleter {
 
     private final Main plugin;
 
-    public ListenerVehicleDestroy(Main plugin) {
+    public BExtraTabComplete(Main plugin) {
         this.plugin = plugin;
     }
 
-    @EventHandler
-    public void onVehicleDestroy(VehicleDestroyEvent e) {
-        if (plugin.protectBoats && (e.getVehicle() instanceof Boat)
-                && (e.getVehicle().getPassenger() instanceof Player)
-                && (!(e.getAttacker() instanceof Player))) {
-            e.setCancelled(true);
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        // /<command> [ver[sion] | mute [minutes] | protectboats [true | false]]
+        List<String> list = new ArrayList<>();
+        switch (args.length) {
+            case 1:
+                list.addAll(Arrays.asList("version", "mute", "protectboats", "clearmutelist"));
+                break;
+            case 2:
+                if (args[0].equalsIgnoreCase("mute")) {
+                    list.add(String.valueOf(plugin.muteMinutes));
+                } else if (args[0].equalsIgnoreCase("protectboats")) {
+                    list.add(String.valueOf(!plugin.protectBoats));
+                    list.add(String.valueOf(plugin.protectBoats));
+                }
         }
+        return list;
     }
 }

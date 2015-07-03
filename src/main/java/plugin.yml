@@ -10,7 +10,7 @@ database: false
 commands:
     bextra:
         description: Boomerang Extra administrative commands.
-        usage: /<command> [ver[sion] | mute [minutes] | protectboats [true | false]]
+        usage: /<command> [ver[sion] | mute [minutes] | protectboats [true | false] | clearmutelist]
         permission: bextra.bextra
         permission-message: You don't have <permission>
     fly:

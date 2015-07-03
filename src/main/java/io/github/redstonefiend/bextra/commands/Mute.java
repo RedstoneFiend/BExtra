@@ -24,6 +24,8 @@ package io.github.redstonefiend.bextra.commands;
  * THE SOFTWARE.
  */
 import io.github.redstonefiend.bextra.Main;
+import java.util.Iterator;
+import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -56,10 +58,16 @@ public class Mute implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.GOLD + "====== Mute List ======");
-            for (Player player : plugin.muteList.keySet()) {
-                long remaining = plugin.muteList.get(player) - System.currentTimeMillis();
-                sender.sendMessage(String.format("%16s %tH:%tM:%tS remaining", player.getName(), remaining, remaining, remaining));
+            sender.sendMessage(ChatColor.YELLOW + "---------" + ChatColor.WHITE + " Mute List " + ChatColor.YELLOW + "----------------------------");
+            for (Iterator<Map.Entry<Player, Long>> it = plugin.muteList.entrySet().iterator(); it.hasNext();) {
+                Map.Entry<Player, Long> entry = it.next();
+                if (entry.getValue() > System.currentTimeMillis()) {
+                    long remaining = entry.getValue() - System.currentTimeMillis();
+                    sender.sendMessage(String.format("%-16s %2d hours, %2d minutes, %2d seconds remaining",
+                            entry.getKey().getName(), remaining / 3600000 % 24, remaining / 60000 % 60, remaining / 1000 % 60));
+                } else {
+                    it.remove();
+                }
             }
         } else {
             Player player = plugin.getServer().getPlayerExact(args[0]);
@@ -67,8 +75,8 @@ public class Mute implements CommandExecutor {
             if (player == null) {
                 sender.sendMessage(ChatColor.RED + "Player " + args[0] + " not found.");
             } else {
-                plugin.muteList.put(player, System.currentTimeMillis() + (duration * 60000));
-                sender.sendMessage(ChatColor.YELLOW + "Player " + args[0] + " muted for " + duration + " minutes.");
+                plugin.muteList.put(player, System.currentTimeMillis() + ((long) duration * 60000L));
+                sender.sendMessage(ChatColor.YELLOW + "Player " + player.getName() + " muted for " + duration + " minute" + (duration > 1 ? "s" : "") + ".");
             }
         }
         return true;

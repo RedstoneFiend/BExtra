@@ -35,7 +35,7 @@ public class BExtra implements CommandExecutor {
 
     public BExtra(Main plugin) {
         this.plugin = plugin;
-        //plugin.getCommand("home").setTabCompleter(new TabComplete(plugin));
+        plugin.getCommand("bextra").setTabCompleter(new BExtraTabComplete(plugin));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class BExtra implements CommandExecutor {
             try {
                 muteMinutes = Integer.parseInt(args[1]);
             } catch (NumberFormatException ex) {
-                sender.sendMessage(ChatColor.RED + "Parameter 2 is not a number.");
+                sender.sendMessage(ChatColor.RED + ex.getMessage().substring(18).replace("\"", "'") + " is not a number");
                 return true;
             }
             plugin.muteMinutes = muteMinutes;
@@ -61,20 +61,23 @@ public class BExtra implements CommandExecutor {
             sender.sendMessage(ChatColor.GREEN + "Mute minutes = " + Integer.toString(plugin.muteMinutes) + ".");
         } else if ((args.length == 2) && (args[0].equalsIgnoreCase("protectboats"))) {
             boolean protectBoats;
-            if (args[2].equalsIgnoreCase("true")) {
+            if (args[1].equalsIgnoreCase("true")) {
                 protectBoats = true;
-            } else if (args[2].equalsIgnoreCase("false")) {
+            } else if (args[1].equalsIgnoreCase("false")) {
                 protectBoats = false;
             } else {
-                sender.sendMessage(ChatColor.RED + "Parameter 2 is not true or false.");
+                sender.sendMessage(ChatColor.RED + args[1] + " is not true or false.");
                 return false;
             }
             plugin.protectBoats = protectBoats;
             plugin.getConfig().set("protect_boats", protectBoats);
             plugin.saveConfig();
-            sender.sendMessage(ChatColor.GREEN + "Protect boats minutes saved.");
-        } else if ((args.length == 1) && (args[0].equalsIgnoreCase("mute"))) {
+            sender.sendMessage(ChatColor.GREEN + "Protect boats set to " + Boolean.toString(plugin.protectBoats) + ".");
+        } else if ((args.length == 1) && (args[0].equalsIgnoreCase("protectboats"))) {
             sender.sendMessage(ChatColor.GREEN + "Protect boats = " + Boolean.toString(plugin.protectBoats) + ".");
+        } else if ((args.length == 1) && (args[0].equalsIgnoreCase("clearmutelist"))) {
+            plugin.muteList.clear();
+            sender.sendMessage(ChatColor.GREEN + "Mute cleared.");
         } else {
             return false;
         }

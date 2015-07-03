@@ -64,9 +64,15 @@ public class Fly implements CommandExecutor {
         if (!player.getAllowFlight()) {
             player.setAllowFlight(true);
             player.sendMessage(ChatColor.YELLOW + "Flight has been enabled for you. Double-press SPACE to fly.");
+            if (player != (Player) sender) {
+                sender.sendMessage(ChatColor.YELLOW + "Flight has been enabled for " + player.getName() + ".");
+            }
         } else {
             player.setAllowFlight(false);
             player.sendMessage(ChatColor.YELLOW + "Flight has been disabled for you.");
+            if (player != (Player) sender) {
+                sender.sendMessage(ChatColor.YELLOW + "Flight has been disabled for " + player.getName() + ".");
+            }
         }
         return true;
     }

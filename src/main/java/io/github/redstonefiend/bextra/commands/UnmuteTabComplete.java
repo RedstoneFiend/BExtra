@@ -1,5 +1,3 @@
-package io.github.redstonefiend.bextra.commands;
-
 /*
  * The MIT License
  *
@@ -23,43 +21,33 @@ package io.github.redstonefiend.bextra.commands;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package io.github.redstonefiend.bextra.commands;
+
 import io.github.redstonefiend.bextra.Main;
-import org.bukkit.ChatColor;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-public class Unmute implements CommandExecutor {
+public class UnmuteTabComplete implements TabCompleter {
 
     private final Main plugin;
 
-    public Unmute(Main plugin) {
+    public UnmuteTabComplete(Main plugin) {
         this.plugin = plugin;
-        plugin.getCommand("unmute").setTabCompleter(new UnmuteTabComplete(plugin));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args.length > 1) {
-            return false;
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        List<String> list = new ArrayList<>();
+        switch (args.length) {
+            case 1:
+                for (Player player : plugin.muteList.keySet()) {
+                    list.add(player.getName());
+                }
         }
-        if (args.length == 0) {
-            sender.sendMessage(ChatColor.GOLD + "====== Mute List ======");
-            for (Player player : plugin.muteList.keySet()) {
-                long remaining = plugin.muteList.get(player) - System.currentTimeMillis();
-                sender.sendMessage(String.format("%16s %tH:%tM:%tS remaining", player.getName(), remaining, remaining, remaining));
-            }
-        } else {
-            Player player = plugin.getServer().getPlayerExact(args[0]);
-            
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Player " + args[0] + " not found.");
-            } else {
-                plugin.muteList.remove(player);
-                sender.sendMessage(ChatColor.YELLOW + "Player " + args[0] + " unmuted.");
-            }
-        }
-        return true;
+        return list;
     }
 }

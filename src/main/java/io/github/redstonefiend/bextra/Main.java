@@ -28,10 +28,11 @@ import io.github.redstonefiend.bextra.commands.Fly;
 import io.github.redstonefiend.bextra.commands.Mute;
 import io.github.redstonefiend.bextra.commands.NightVision;
 import io.github.redstonefiend.bextra.commands.Unmute;
+import io.github.redstonefiend.bextra.listeners.AsyncPlayerChat;
+import io.github.redstonefiend.bextra.listeners.VehicleDestroy;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -50,6 +51,7 @@ public class Main extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        this.getDataFolder().mkdir();
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
 
@@ -62,7 +64,10 @@ public class Main extends JavaPlugin implements Listener {
         getCommand("mute").setExecutor(new Mute(this));
         getCommand("unmute").setExecutor(new Unmute(this));
 
-        this.getLogger().log(Level.INFO, "BHome version {0} loaded.", this.getDescription().getVersion());
+        getServer().getPluginManager().registerEvents(new VehicleDestroy(this), this);
+        getServer().getPluginManager().registerEvents(new AsyncPlayerChat(this), this);
+
+        this.getLogger().log(Level.INFO, "BExtra version {0} loaded.", this.getDescription().getVersion());
     }
 
     @Override
@@ -72,14 +77,8 @@ public class Main extends JavaPlugin implements Listener {
 
     @Override
     public void saveConfig() {
-        String header
-                = "#################################\n"
-                + "# Boomerang Extra Configuration #\n"
-                + "#################################";
-
         String str = this.getConfig().saveToString();
         StringBuilder sb = new StringBuilder(str);
-        sb.replace(0, sb.indexOf("\n"), header);
 
         sb.insert(sb.indexOf("\nversion:") + 1,
                 "\n# Configuration version used during upgrade. Do not change.\n");
@@ -87,10 +86,11 @@ public class Main extends JavaPlugin implements Listener {
         sb.insert(sb.indexOf("\nmute_minutes") + 1,
                 "\n# The default number of minutes a player will remain muted.\n");
 
-        sb.insert(sb.indexOf("\nprotect_boars") + 1,
+        sb.insert(sb.indexOf("\nprotect_boats") + 1,
                 "\n# When true, protects boats from breakage unless deliberately broken.\n");
 
         final File cfg_file = new File(this.getDataFolder(), "config.yml");
+        this.getLogger().info(this.getDataFolder().toString());
         final String cfg_str = sb.toString();
         final Logger logger = this.getLogger();
 
@@ -99,12 +99,13 @@ public class Main extends JavaPlugin implements Listener {
             public void run() {
                 cfg_file.delete();
                 try (PrintWriter writer = new PrintWriter(cfg_file, "UTF-8")) {
+                    cfg_file.createNewFile();
                     writer.write(cfg_str);
                     writer.close();
-                } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+                } catch (IOException ex) {
                     logger.severe("Error saving configuration!");
                 }
             }
-        }.runTaskLater(this, 1);
+        }.runTaskAsynchronously(this);
     }
 }
