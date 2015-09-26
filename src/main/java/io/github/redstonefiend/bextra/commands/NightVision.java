@@ -51,6 +51,10 @@ public class NightVision implements CommandExecutor {
         }
         Player player;
         if (args.length == 1) {
+            if (!sender.hasPermission("bextra.nightvision.other")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission.");
+                return true;
+            }
             player = plugin.getServer().getPlayerExact(args[0]);
             if (player == null) {
                 sender.sendMessage(ChatColor.RED + "Player not found.");

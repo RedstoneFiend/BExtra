@@ -90,7 +90,6 @@ public class Main extends JavaPlugin implements Listener {
                 "\n# When true, protects boats from breakage unless deliberately broken.\n");
 
         final File cfg_file = new File(this.getDataFolder(), "config.yml");
-        this.getLogger().info(this.getDataFolder().toString());
         final String cfg_str = sb.toString();
         final Logger logger = this.getLogger();
 

@@ -1,5 +1,5 @@
 name: BExtra
-version: 1.0
+version: 1.1
 description: Miscellaneous player and administrative commands.
 author: RedstoneFiend
 website: https://github.com/RedstoneFiend/BExtra
@@ -11,7 +11,7 @@ commands:
     bextra:
         description: Boomerang Extra administrative commands.
         usage: /<command> [ver[sion] | mute [minutes] | protectboats [true | false] | clearmutelist]
-        permission: bextra.bextra
+        permission: bextra.admin
         permission-message: You don't have <permission>
     fly:
         description: Toggle flight. Double-tap space bar to fly when enabled.
@@ -39,7 +39,7 @@ permissions:
     bextra.*:
         description: Gives access to all Boomerang Extra commands
         children:
-            bextra.bextra: true
+            bextra.admin: true
             bextra.fly: true
             bextra.fly.other: true
             bextra.mute: true
